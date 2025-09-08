@@ -1,0 +1,16 @@
+name: methods3_2025
+channels:
+- defaults
+- conda-forge
+dependencies:
+## Python version
+- python>=3.10
+
+## Python packages
+- pip
+- scikit-learn
+- matplotlib
+- numpy
+- scipy
+- pandas
+- seaborn
