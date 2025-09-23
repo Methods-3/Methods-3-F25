@@ -1,0 +1,73 @@
+# Multilevel modeling in R
+
+Yay, summer is over and we're back to doing methods :)
+This file is not mandatory - but it will help you think about interpreting the outputs of multilevel models. Some of the questions may be difficult, so ask as many questions as you want to!
+
+
+Start by loading in the data
+```{r}
+sim_data <- read.csv("sim_data.csv")
+```
+
+The (made up) data describes 100 participants' scores at a memory task (how many items they remembered correctly). Some have practiced it beforehand, indicated by the column "expertise", others are completely new to the task. Each participant has 3 trials to improve (so we have repeated measures!).
+
+
+Lets do some models to look into the data (do try to understand the code)
+
+```{r}
+#first we fit a model with intercepts for each subject
+memory_model <- lmer(score ~ expertise + trial_number + (1| ids), data = sim_data)
+
+#and save the summary
+memory_s <- summary(memory_model)
+
+#what is in $coefficients? 
+memory_s$coefficients 
+#(Bonus question to remember what we did last semester: 
+## are the estimates significant?) (don't get stuck if you don't remember)
+
+#what does ranef() output?
+subject_level <- memory_model %>% ranef() 
+
+#look at the distribution of random intercepts - what shape is it?
+subject_level$ids[,1] %>% hist()
+
+#look at the standard deviation of the random intercepts
+test_s$varcor
+```
+Here are some questions; you can ask Lydia if you are confused or puzzled
+
+*Q1:* what does the group level intercept (13.2) represent in this model?
+*A:* 
+
+*Q2:* what does the subject level intercepts represent in this model? For instance, what does it mean that the modeled random intercept for the first participant is -0.62?
+*A:*
+
+
+*Cool fact:*
+Because random effects are normally distributed, we can use their standard deviation to say what range most subjects' intercepts will be within (according to our model): the group level intercept plus or minus 2 standard deviations of the subject level intercepts. 
+
+Compare this with the classical regression model, where we only model the group level intercept: in that case, we know that participants are different, but can't say anything about how different.
+
+
+### Exercise 1
+Your turn to model now! Maybe some participants improve faster than others, so edit the model from above to also include a random slope for trial_number for each participant. 
+```{r}
+#model goes here
+```
+Look at the summary(model)$varcor. Can you describe (or make a guess about) what each of the four numbers mean?
+*A:*
+
+Take a look at summary(model)$coefficients as well. Looking at both the group level slope for trial_number and the sd of subject level slopes, does the model predict that all people improve, or do some get negative slopes?
+*A:*
+
+### Exercise 2
+Given the experimental design explained briefly at the start, would it make sense to add a random slope for expertise (instead of trial number) for each participant? What happens if you try? 
+
+```{r}
+
+```
+
+
+
+Ending note: In a few weeks you will know why modeling this type of data ("counts") with a linear model is not ideal, and what might be a better choice instead - Then you can look back on this and feel super smart :)
